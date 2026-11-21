@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>一時保育 担当＆チェック表</title>
+    <title>一時保育 担当＆チェック表 | キッズルームなるなるの木</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Zen Maru Gothic & Noto Sans JP -->
@@ -92,9 +92,14 @@
             appearance: none;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235C4D42' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
             background-repeat: no-repeat;
-            background-position: right 0.5rem center;
-            background-size: 0.95em;
-            padding-right: 1.65rem;
+            background-position: right 0.45rem center;
+            background-size: 0.9em;
+            padding-right: 1.55rem;
+        }
+        select.staff-select:disabled {
+            background-image: none;
+            padding-right: 0.5rem;
+            cursor: not-allowed;
         }
 
         /* 印刷用スタイル */
@@ -102,7 +107,7 @@
             body {
                 background-color: #FFFFFF !important;
                 color: #000000 !important;
-                font-size: 10.5pt;
+                font-size: 10pt;
             }
             .no-print, #lock-screen {
                 display: none !important;
@@ -128,7 +133,7 @@
             }
             th, td {
                 border: 1px solid #888888 !important;
-                padding: 5px 6px !important;
+                padding: 4px 6px !important;
                 background-color: #FFFFFF !important;
                 color: #000000 !important;
                 box-shadow: none !important;
@@ -151,7 +156,7 @@
                 display: inline-block !important;
                 border: 1px solid #333 !important;
                 padding: 0px 4px;
-                font-size: 8.5pt;
+                font-size: 8pt;
                 border-radius: 3px;
             }
         }
@@ -170,8 +175,9 @@
             <div class="w-16 h-16 rounded-3xl bg-sage-500 text-white flex items-center justify-center mx-auto mb-4 shadow-md">
                 <i class="ph-fill ph-lock-key text-3xl"></i>
             </div>
+            <p class="text-xs font-bold text-sage-600 mb-0.5">キッズルームなるなるの木</p>
             <h1 class="font-maru font-bold text-xl text-wood-800 mb-1">一時保育 担当＆チェック表</h1>
-            <p class="text-xs font-bold text-sage-600 mb-5">スタッフ専用ログイン（リアルタイム同期）</p>
+            <p class="text-xs text-wood-700/75 mb-5">スタッフ専用ログイン（リアルタイム同期）</p>
 
             <div class="bg-ivory rounded-2xl p-4 mb-5 border border-sage-200/80 text-left">
                 <label for="passcode-input" class="block text-xs font-bold text-wood-700 mb-1.5">
@@ -192,7 +198,7 @@
             </button>
 
             <p class="text-[11px] text-wood-700/60 mt-4">
-                初期合言葉は「1234」です。<br>入室後の「スタッフ・合言葉設定」からいつでも変更できます。
+                初期合言葉は「1234」です。<br>入室後の「スタッフ・合言葉設定」から変更できます。
             </p>
         </div>
     </div>
@@ -204,7 +210,7 @@
 
         <!-- ヘッダー -->
         <header class="bg-white border-b border-sage-200 shadow-xs sticky top-0 z-40 no-print">
-            <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3 flex flex-wrap items-center justify-between gap-2.5">
+            <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3 flex flex-wrap items-center justify-between gap-2">
                 <!-- タイトル＆日付＆同期ステータス -->
                 <div class="flex flex-wrap items-center gap-2 sm:gap-3">
                     <div class="flex items-center gap-2">
@@ -212,7 +218,8 @@
                             <i class="ph-fill ph-baby text-xl sm:text-2xl"></i>
                         </div>
                         <div>
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-1.5">
+                                <span class="hidden lg:inline text-xs font-bold text-sage-600 bg-sage-50 px-2 py-0.5 rounded-md">キッズルームなるなるの木</span>
                                 <h1 class="font-maru font-bold text-base sm:text-xl text-wood-800 leading-tight">
                                     一時保育 担当＆チェック表
                                 </h1>
@@ -233,27 +240,52 @@
                 </div>
 
                 <!-- アクションボタン群 -->
-                <div class="flex items-center gap-1.5 sm:gap-2">
-                    <button onclick="openStaffModal()" class="flex items-center gap-1 bg-sage-100 hover:bg-sage-200 active:scale-95 text-sage-700 font-bold px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl transition text-xs sm:text-sm shadow-2xs">
-                        <i class="ph-bold ph-gear text-base sm:text-lg"></i>
-                        <span>スタッフ・合言葉設定</span>
+                <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                    <!-- 【新機能】全端末同期の編集ロック／解除トグルボタン -->
+                    <button id="edit-lock-toggle-btn" onclick="toggleGlobalEditLock()" class="flex items-center gap-1.5 bg-sage-50 hover:bg-sage-100 active:scale-95 text-sage-700 border border-sage-200 font-bold px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl transition text-xs sm:text-sm shadow-2xs">
+                        <i class="ph-bold ph-lock-open text-base sm:text-lg"></i>
+                        <span>🔓 編集ロック</span>
                     </button>
-                    <button onclick="openResetModal()" class="flex items-center gap-1 bg-terracotta-100 hover:bg-red-200 active:scale-95 text-terracotta-600 font-bold px-2.5 py-2 sm:px-3.5 sm:py-2.5 rounded-xl transition text-xs sm:text-sm shadow-2xs" title="本日の児童一覧をクリア">
+
+                    <button id="btn-open-staff" onclick="openStaffModal()" class="flex items-center gap-1 bg-sage-100 hover:bg-sage-200 active:scale-95 disabled:opacity-45 disabled:pointer-events-none text-sage-700 font-bold px-2.5 py-2 sm:px-3.5 sm:py-2.5 rounded-xl transition text-xs sm:text-sm shadow-2xs">
+                        <i class="ph-bold ph-gear text-base sm:text-lg"></i>
+                        <span class="hidden sm:inline">スタッフ・合言葉設定</span>
+                        <span class="sm:hidden">設定</span>
+                    </button>
+
+                    <button id="btn-open-reset" onclick="openResetModal()" class="flex items-center gap-1 bg-terracotta-100 hover:bg-red-200 active:scale-95 disabled:opacity-45 disabled:pointer-events-none text-terracotta-600 font-bold px-2.5 py-2 sm:px-3.5 sm:py-2.5 rounded-xl transition text-xs sm:text-sm shadow-2xs" title="本日の児童一覧をクリア">
                         <i class="ph-bold ph-sparkle text-base sm:text-lg"></i>
                         <span class="hidden sm:inline">新しい日用にリセット</span>
                         <span class="sm:hidden">リセット</span>
                     </button>
-                    <button onclick="lockApp()" class="flex items-center justify-center bg-cream hover:bg-sage-100 active:scale-95 text-wood-700 font-bold p-2 sm:px-3 sm:py-2.5 rounded-xl transition text-xs sm:text-sm" title="画面をロックする">
-                        <i class="ph-bold ph-lock-simple text-base sm:text-lg"></i>
+
+                    <button onclick="lockApp()" class="flex items-center justify-center bg-cream hover:bg-sage-100 active:scale-95 text-wood-700 font-bold p-2 sm:px-3 sm:py-2.5 rounded-xl transition text-xs sm:text-sm" title="入室パスコード画面へ戻る">
+                        <i class="ph-bold ph-sign-out text-base sm:text-lg"></i>
                     </button>
                 </div>
             </div>
         </header>
 
+        <!-- 【新機能】全端末ロック中のお知らせバナー -->
+        <div id="edit-locked-banner" class="hidden bg-amber-50 border-b-2 border-amber-300 text-amber-900 px-3 sm:px-6 py-2.5 no-print">
+            <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2 text-xs sm:text-sm font-bold">
+                    <i class="ph-fill ph-lock-key text-amber-600 text-lg shrink-0"></i>
+                    <span>🔒 現在、全端末で編集がロックされています（誤操作防止モード・閲覧専用）</span>
+                </div>
+                <button onclick="toggleGlobalEditLock()" class="text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white px-3 py-1.5 rounded-lg shadow-2xs transition active:scale-95">
+                    ロックを解除する
+                </button>
+            </div>
+        </div>
+
         <!-- 印刷時のみ表示されるヘッダー -->
         <div class="hidden print-only p-4 pb-2">
             <div class="flex justify-between items-end border-b-2 border-gray-800 pb-2">
-                <h1 class="text-xl font-bold">一時保育 担当割り振り・業務チェック表</h1>
+                <div>
+                    <p class="text-xs font-bold">キッズルームなるなるの木</p>
+                    <h1 class="text-xl font-bold">一時保育 担当割り振り・業務チェック表</h1>
+                </div>
                 <p id="print-date-display" class="text-base font-bold"></p>
             </div>
         </div>
@@ -262,36 +294,36 @@
         <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-6 flex flex-col gap-4 sm:gap-5">
 
             <!-- 顧客（お預かり児童）追加バー -->
-            <section class="bg-white rounded-2xl p-3.5 sm:p-4 shadow-xs border border-sage-200/80 no-print">
+            <section id="add-child-section" class="bg-white rounded-2xl p-3.5 sm:p-4 shadow-xs border border-sage-200/80 no-print transition-opacity">
                 <div class="flex flex-col lg:flex-row gap-2.5 sm:gap-3 items-stretch lg:items-end">
                     <div class="flex-1">
                         <label class="block text-xs font-bold text-wood-700 mb-1">
                             お子様（顧客）名 <span class="text-terracotta-500">*必須</span>
                         </label>
                         <input type="text" id="input-child-name" placeholder="例：やまだ たろう" 
-                            class="w-full bg-ivory border border-sage-200 rounded-xl px-3.5 py-2.5 text-base font-bold text-wood-800 focus:outline-none focus:ring-2 focus:ring-sage-500"
+                            class="w-full bg-ivory border border-sage-200 rounded-xl px-3.5 py-2.5 text-base font-bold text-wood-800 focus:outline-none focus:ring-2 focus:ring-sage-500 disabled:bg-gray-100 disabled:text-gray-400"
                             onkeypress="if(event.key==='Enter') addChild()">
                     </div>
                     <div class="grid grid-cols-2 lg:flex gap-2.5">
                         <div class="lg:w-40">
                             <label class="block text-xs font-bold text-wood-700 mb-1">お預かり時間（任意）</label>
                             <input type="text" id="input-child-time" placeholder="例：9:00〜15:00" 
-                                class="w-full bg-ivory border border-sage-200 rounded-xl px-3 py-2.5 text-sm text-wood-800 focus:outline-none focus:ring-2 focus:ring-sage-500"
+                                class="w-full bg-ivory border border-sage-200 rounded-xl px-3 py-2.5 text-sm text-wood-800 focus:outline-none focus:ring-2 focus:ring-sage-500 disabled:bg-gray-100 disabled:text-gray-400"
                                 onkeypress="if(event.key==='Enter') addChild()">
                         </div>
                         <div class="lg:w-56">
                             <label class="block text-xs font-bold text-wood-700 mb-1">メモ・特記事項（任意）</label>
                             <input type="text" id="input-child-memo" placeholder="例：卵アレルギー" 
-                                class="w-full bg-ivory border border-sage-200 rounded-xl px-3 py-2.5 text-sm text-wood-800 focus:outline-none focus:ring-2 focus:ring-sage-500"
+                                class="w-full bg-ivory border border-sage-200 rounded-xl px-3 py-2.5 text-sm text-wood-800 focus:outline-none focus:ring-2 focus:ring-sage-500 disabled:bg-gray-100 disabled:text-gray-400"
                                 onkeypress="if(event.key==='Enter') addChild()">
                         </div>
                     </div>
                     <div class="flex gap-2 pt-1 lg:pt-0">
-                        <button onclick="addChild()" class="flex-1 lg:flex-none flex items-center justify-center gap-1.5 bg-sage-500 hover:bg-sage-600 active:scale-95 text-white font-bold px-5 py-2.5 rounded-xl shadow-xs transition text-sm sm:text-base whitespace-nowrap">
+                        <button id="btn-add-child" onclick="addChild()" class="flex-1 lg:flex-none flex items-center justify-center gap-1.5 bg-sage-500 hover:bg-sage-600 active:scale-95 disabled:opacity-45 disabled:pointer-events-none text-white font-bold px-5 py-2.5 rounded-xl shadow-xs transition text-sm sm:text-base whitespace-nowrap">
                             <i class="ph-bold ph-plus text-lg"></i>
                             <span>追加する</span>
                         </button>
-                        <button onclick="openBulkModal()" class="flex items-center justify-center gap-1.5 bg-cream hover:bg-sage-100 active:scale-95 text-wood-700 font-bold px-3.5 py-2.5 rounded-xl border border-sage-200 transition text-xs sm:text-sm whitespace-nowrap" title="複数名をまとめて登録">
+                        <button id="btn-bulk-modal" onclick="openBulkModal()" class="flex items-center justify-center gap-1.5 bg-cream hover:bg-sage-100 active:scale-95 disabled:opacity-45 disabled:pointer-events-none text-wood-700 font-bold px-3.5 py-2.5 rounded-xl border border-sage-200 transition text-xs sm:text-sm whitespace-nowrap" title="複数名をまとめて登録">
                             <i class="ph-bold ph-list-plus text-lg text-sage-600"></i>
                             <span>一括登録</span>
                         </button>
@@ -304,14 +336,14 @@
                 <!-- 担当者別件数バッジ -->
                 <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
                     <span class="text-xs font-bold text-sage-700 flex items-center gap-1 mr-0.5">
-                        <i class="ph-fill ph-chart-pie-slice text-base"></i> 担当数 (<span id="child-count-badge">0</span>名):
+                        <i class="ph-fill ph-chart-pie-slice text-base"></i> 担当数（<span id="child-count-badge">0</span>名）:
                     </span>
                     <div id="staff-summary-list" class="flex flex-wrap items-center gap-1.5">
                         <!-- JSで動的に描画 -->
                     </div>
                 </div>
 
-                <!-- 共有・印刷ボタン -->
+                <!-- 共有・印刷ボタン（ロック中でも常に操作可能） -->
                 <div class="flex items-center gap-2 self-end md:self-auto shrink-0">
                     <button onclick="copySummaryText()" class="flex items-center gap-1.5 bg-white hover:bg-sage-100 active:scale-95 text-wood-800 border border-sage-200 font-bold px-3 py-2 rounded-xl text-xs sm:text-sm shadow-2xs transition">
                         <i class="ph-bold ph-copy text-sage-600 text-base"></i>
@@ -331,7 +363,7 @@
                 </div>
                 <p class="font-maru font-bold text-lg text-wood-800 mb-1">この日のお預かり児童はまだ登録されていません</p>
                 <p class="text-xs sm:text-sm text-wood-700/75 mb-4">上の入力欄からお子様のお名前を追加すると、全員のスマホ・タブレットに即座に反映されます。</p>
-                <button onclick="loadSampleChildren()" class="text-xs font-bold text-sage-600 hover:text-sage-700 underline bg-sage-50 px-4 py-2 rounded-xl">
+                <button id="btn-load-sample" onclick="loadSampleChildren()" class="text-xs font-bold text-sage-600 hover:text-sage-700 underline bg-sage-50 px-4 py-2 rounded-xl disabled:opacity-45 disabled:pointer-events-none">
                     サンプルの児童データを3名入れて試す
                 </button>
             </div>
@@ -348,19 +380,19 @@
             =========================================== -->
             <section id="desktop-table-section" class="hidden md:flex bg-white rounded-2xl shadow-xs border border-sage-200 overflow-hidden flex-col">
                 <div class="table-wrapper overflow-x-auto w-full">
-                    <table class="w-full border-collapse text-left min-w-[880px]">
+                    <table class="w-full border-collapse text-left min-w-[960px]">
                         <thead>
                             <tr class="bg-sage-100 text-wood-800 border-b-2 border-sage-200 text-sm">
-                                <th class="sticky-col py-3.5 px-4 font-maru font-bold w-56 lg:w-64">
+                                <th class="sticky-col py-3.5 px-4 font-maru font-bold w-56 lg:w-60">
                                     <div class="flex items-center justify-between">
                                         <span>お預かり児童（<span id="child-count">0</span>名）</span>
                                         <span class="text-[11px] font-normal text-wood-700/70 no-print">タップで編集</span>
                                     </div>
                                 </th>
-                                <th class="py-3.5 px-2.5 font-maru font-bold text-center w-32">
+                                <th class="py-3.5 px-2.5 font-maru font-bold text-center w-44">
                                     <div class="flex items-center justify-center gap-1">
                                         <i class="ph-duotone ph-camera text-sage-600 text-base no-print"></i>
-                                        <span>託児フォト</span>
+                                        <span>託児フォト（最大5回）</span>
                                     </div>
                                 </th>
                                 <th class="py-3.5 px-2.5 font-maru font-bold text-center w-32">
@@ -414,7 +446,7 @@
                         「会計」と「会計Wチェック」が同じ先生の場合は赤枠でお知らせします
                     </span>
                 </div>
-                <div class="font-bold text-sage-700">全端末リアルタイム同期対応</div>
+                <div class="font-bold text-sage-700">キッズルームなるなるの木・全端末リアルタイム同期</div>
             </footer>
         </main>
     </div>
@@ -441,7 +473,7 @@
                         <i class="ph-fill ph-users text-base"></i> 保育者（スタッフ）リスト
                     </h3>
                     <div class="flex gap-2 mb-3">
-                        <input type="text" id="input-staff-name" placeholder="例：小林" 
+                        <input type="text" id="input-staff-name" placeholder="例：小林先生" 
                             class="flex-1 bg-ivory border border-sage-200 rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-sage-500"
                             onkeypress="if(event.key==='Enter') addStaff()">
                         <button onclick="addStaff()" class="bg-sage-500 hover:bg-sage-600 text-white font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1 shrink-0">
@@ -616,20 +648,27 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // データベースのルートパス
-        const DB_ROOT = 'narunaru_nursery';
-        const SESSION_UNLOCK_KEY = 'narunaru_unlocked_v1';
+        // Firebase データベースパス定義
+        const SETTINGS_PATH = 'narunaru/settings';
+        const DAYS_PATH = 'narunaru/days';
+        const UNLOCK_STORAGE_KEY = 'narunaru_unlocked_passcode_v2';
 
         // ==========================================
         // 2. 定数・アプリ状態管理
         // ==========================================
-        const TASKS = [
-            { key: 'photo', label: '託児フォト', icon: 'ph-camera' },
+        const OTHER_TASKS = [
             { key: 'concierge', label: 'コンシェルジュ', icon: 'ph-hand-heart' },
             { key: 'accounting', label: '会計', icon: 'ph-calculator' },
             { key: 'accountingCheck', label: '会計Wチェック', icon: 'ph-check-circle' },
             { key: 'luggage', label: '荷物', icon: 'ph-backpack' },
             { key: 'report', label: '報告', icon: 'ph-chat-teardrop-text' }
+        ];
+
+        const MAX_PHOTO_SLOTS = 5;
+
+        const DEFAULT_STAFF = [
+            '亜紀先生', '佐藤先生', 'ユミ先生', '佳奈先生', '木村先生',
+            '仁美先生', '起代先生', '小山先生', '庭田先生', '駒木根先生', '藤井先生'
         ];
 
         // 保育者ごとの優しい北欧パステルカラーパレット
@@ -643,17 +682,19 @@
             { bg: '#FFFDE7', text: '#F57F17', border: '#FFF59D' }, // ソフトイエロー
             { bg: '#EFEBE9', text: '#4E342E', border: '#BCAAA4' }, // ソフトブラウン
             { bg: '#F1F8E9', text: '#558B2F', border: '#C5E1A5' }, // ライムグリーン
-            { bg: '#E8EAF6', text: '#283593', border: '#9FA8DA' }  // インディゴ
+            { bg: '#E8EAF6', text: '#283593', border: '#9FA8DA' }, // インディゴ
+            { bg: '#FBE9E7', text: '#D84315', border: '#FFAB91' }  // コーラル
         ];
 
         let appState = {
             date: getTodayString(),
-            staffList: ['佐藤', '鈴木', '高橋', '田中', '伊藤'],
+            staffList: [...DEFAULT_STAFF],
             children: [],
-            passcode: '1234'
+            passcode: '1234',
+            isEditLocked: false
         };
 
-        let currentRecordRef = null;
+        let currentDayRef = null;
         let isUnlocked = false;
 
         function getTodayString() {
@@ -683,18 +724,17 @@
             btnEl.innerHTML = '<i class="ph-bold ph-spinner animate-spin text-xl"></i><span>確認中...</span>';
 
             try {
-                // Firebaseから最新の合言葉を取得（未設定ならデフォルト "1234" をセット）
-                const snap = await db.ref(`${DB_ROOT}/passcode`).once('value');
+                const snap = await db.ref(`${SETTINGS_PATH}/passcode`).once('value');
                 let serverPasscode = snap.val();
                 if (!serverPasscode) {
                     serverPasscode = '1234';
-                    await db.ref(`${DB_ROOT}/passcode`).set('1234');
+                    await db.ref(`${SETTINGS_PATH}/passcode`).set('1234');
                 }
                 appState.passcode = String(serverPasscode);
 
                 if (entered === appState.passcode) {
                     errorEl.classList.add('hidden');
-                    sessionStorage.setItem(SESSION_UNLOCK_KEY, entered);
+                    localStorage.setItem(UNLOCK_STORAGE_KEY, entered);
                     unlockSuccess();
                 } else {
                     errorEl.querySelector('span').textContent = '合言葉が違います。もう一度お試しください。';
@@ -713,17 +753,17 @@
         }
 
         async function checkAutoUnlock() {
-            const savedPass = sessionStorage.getItem(SESSION_UNLOCK_KEY);
+            const savedPass = localStorage.getItem(UNLOCK_STORAGE_KEY);
             if (!savedPass) return;
 
             try {
-                const snap = await db.ref(`${DB_ROOT}/passcode`).once('value');
+                const snap = await db.ref(`${SETTINGS_PATH}/passcode`).once('value');
                 const serverPasscode = snap.val() ? String(snap.val()) : '1234';
                 if (savedPass === serverPasscode) {
                     appState.passcode = serverPasscode;
                     unlockSuccess();
                 } else {
-                    sessionStorage.removeItem(SESSION_UNLOCK_KEY);
+                    localStorage.removeItem(UNLOCK_STORAGE_KEY);
                 }
             } catch (e) {
                 console.error(e);
@@ -741,16 +781,16 @@
         }
 
         function lockApp() {
-            sessionStorage.removeItem(SESSION_UNLOCK_KEY);
+            localStorage.removeItem(UNLOCK_STORAGE_KEY);
             isUnlocked = false;
-            if (currentRecordRef) {
-                currentRecordRef.off();
+            if (currentDayRef) {
+                currentDayRef.off();
             }
             document.getElementById('passcode-input').value = '';
             document.getElementById('app-wrapper').classList.add('hidden');
             document.getElementById('app-wrapper').classList.remove('flex');
             document.getElementById('lock-screen').classList.remove('hidden');
-            showToast('画面をロックしました');
+            showToast('入室ロック画面に戻りました');
         }
 
         // ==========================================
@@ -766,47 +806,59 @@
                 }
             });
 
-            // スタッフリストのリアルタイム購読
-            db.ref(`${DB_ROOT}/staff`).on('value', (snap) => {
-                const val = snap.val();
-                if (Array.isArray(val)) {
-                    appState.staffList = val;
-                } else if (val === null) {
-                    // 初回のみ初期スタッフを保存
-                    db.ref(`${DB_ROOT}/staff`).set(appState.staffList);
+            // 設定（スタッフリスト・合言葉・全体編集ロック状態）のリアルタイム購読
+            db.ref(SETTINGS_PATH).on('value', (snap) => {
+                const settings = snap.val() || {};
+
+                // スタッフリストの同期
+                if (Array.isArray(settings.staff) && settings.staff.length > 0) {
+                    appState.staffList = settings.staff.filter(Boolean);
+                } else if (!settings.staff) {
+                    // 未登録の場合は11名のデフォルトスタッフを初期セット
+                    appState.staffList = [...DEFAULT_STAFF];
+                    db.ref(`${SETTINGS_PATH}/staff`).set(appState.staffList);
                 }
+
+                // 合言葉の同期
+                if (settings.passcode) {
+                    appState.passcode = String(settings.passcode);
+                    const passInput = document.getElementById('input-new-passcode');
+                    if (passInput && document.activeElement !== passInput) {
+                        passInput.value = appState.passcode;
+                    }
+                }
+
+                // 【新機能】全端末同期の編集ロック状態の反映
+                const prevLocked = appState.isEditLocked;
+                appState.isEditLocked = Boolean(settings.isEditLocked);
+
+                // ロックされた瞬間に開いている編集モーダルがあれば自動で閉じる
+                if (!prevLocked && appState.isEditLocked) {
+                    ['staff-modal', 'bulk-modal', 'edit-child-modal', 'reset-modal'].forEach(closeModal);
+                }
+
                 renderAll();
                 if (!document.getElementById('staff-modal').classList.contains('hidden')) {
                     renderStaffModalList();
                 }
             });
 
-            // 合言葉のリアルタイム変更監視（他の端末で変更されたら反映）
-            db.ref(`${DB_ROOT}/passcode`).on('value', (snap) => {
-                const val = snap.val();
-                if (val) {
-                    appState.passcode = String(val);
-                    document.getElementById('input-new-passcode').value = appState.passcode;
-                }
-            });
-
-            // 本日の日付レコードのリアルタイム購読を開始
+            // 選択日付の児童データのリアルタイム購読
             subscribeDateRecords(appState.date);
         }
 
         function subscribeDateRecords(dateStr) {
-            if (currentRecordRef) {
-                currentRecordRef.off();
+            if (currentDayRef) {
+                currentDayRef.off();
             }
 
-            currentRecordRef = db.ref(`${DB_ROOT}/records/${dateStr}`);
-            currentRecordRef.on('value', (snap) => {
+            currentDayRef = db.ref(`${DAYS_PATH}/${dateStr}`);
+            currentDayRef.on('value', (snap) => {
                 const val = snap.val();
                 if (Array.isArray(val)) {
-                    // Firebase配列の欠損対策
                     appState.children = val.filter(Boolean).map(normalizeChild);
                 } else if (val && typeof val === 'object') {
-                    appState.children = Object.values(val).map(normalizeChild);
+                    appState.children = Object.values(val).filter(Boolean).map(normalizeChild);
                 } else {
                     appState.children = [];
                 }
@@ -814,19 +866,44 @@
             });
         }
 
+        // データ正規化（旧形式の単一 photo オブジェクトも photos 配列へスムーズに変換）
         function normalizeChild(c) {
             const tasks = {};
-            TASKS.forEach(t => {
+            OTHER_TASKS.forEach(t => {
                 tasks[t.key] = {
                     staff: c.tasks?.[t.key]?.staff || '',
                     done: Boolean(c.tasks?.[t.key]?.done)
                 };
             });
+
+            let photos = [];
+            if (Array.isArray(c.photos) && c.photos.length > 0) {
+                photos = c.photos.filter(Boolean).slice(0, MAX_PHOTO_SLOTS).map(p => ({
+                    staff: p.staff || '',
+                    done: Boolean(p.done)
+                }));
+            } else if (c.photos && typeof c.photos === 'object') {
+                photos = Object.values(c.photos).filter(Boolean).slice(0, MAX_PHOTO_SLOTS).map(p => ({
+                    staff: p.staff || '',
+                    done: Boolean(p.done)
+                }));
+            } else if (c.tasks?.photo) {
+                photos = [{
+                    staff: c.tasks.photo.staff || '',
+                    done: Boolean(c.tasks.photo.done)
+                }];
+            }
+
+            if (photos.length === 0) {
+                photos = [{ staff: '', done: false }];
+            }
+
             return {
                 id: c.id || generateId(),
                 name: c.name || '',
                 time: c.time || '',
                 memo: c.memo || '',
+                photos,
                 tasks
             };
         }
@@ -835,7 +912,7 @@
             if (!isUnlocked) return;
             setSyncStatus('saving');
             try {
-                await db.ref(`${DB_ROOT}/records/${appState.date}`).set(appState.children);
+                await db.ref(`${DAYS_PATH}/${appState.date}`).set(appState.children);
                 setSyncStatus('connected');
             } catch (e) {
                 console.error('保存エラー:', e);
@@ -848,7 +925,7 @@
             if (!isUnlocked) return;
             setSyncStatus('saving');
             try {
-                await db.ref(`${DB_ROOT}/staff`).set(appState.staffList);
+                await db.ref(`${SETTINGS_PATH}/staff`).set(appState.staffList);
                 setSyncStatus('connected');
             } catch (e) {
                 console.error('スタッフ保存エラー:', e);
@@ -873,9 +950,77 @@
         }
 
         // ==========================================
-        // 5. 画面描画（PCテーブル＆スマホカード両対応）
+        // 5. 【新機能】全端末同期の編集ロック／解除
+        // ==========================================
+        async function toggleGlobalEditLock() {
+            if (!isUnlocked) return;
+            const nextLocked = !appState.isEditLocked;
+            setSyncStatus('saving');
+            try {
+                await db.ref(`${SETTINGS_PATH}/isEditLocked`).set(nextLocked);
+                setSyncStatus('connected');
+                showToast(
+                    nextLocked 
+                        ? '🔒 全端末で編集をロックしました（閲覧専用）' 
+                        : '🔓 編集ロックを解除しました'
+                );
+            } catch (e) {
+                console.error('ロック切り替えエラー:', e);
+                setSyncStatus('offline');
+                showToast('ロックの切り替えに失敗しました', 'error');
+            }
+        }
+
+        function guardIfLocked() {
+            if (appState.isEditLocked) {
+                showToast('現在ロック中のため編集できません。上の「ロック中」ボタンで解除してください', 'error');
+                return true;
+            }
+            return false;
+        }
+
+        function updateEditLockUI() {
+            const locked = appState.isEditLocked;
+            const toggleBtn = document.getElementById('edit-lock-toggle-btn');
+            const banner = document.getElementById('edit-locked-banner');
+
+            if (locked) {
+                toggleBtn.className = 'flex items-center gap-1.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-white border border-amber-600 font-bold px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl transition text-xs sm:text-sm shadow-sm';
+                toggleBtn.innerHTML = '<i class="ph-fill ph-lock-key text-base sm:text-lg"></i><span>🔒 ロック中（タップで解除）</span>';
+                banner.classList.remove('hidden');
+            } else {
+                toggleBtn.className = 'flex items-center gap-1.5 bg-sage-50 hover:bg-sage-100 active:scale-95 text-sage-700 border border-sage-200 font-bold px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl transition text-xs sm:text-sm shadow-2xs';
+                toggleBtn.innerHTML = '<i class="ph-bold ph-lock-open text-base sm:text-lg"></i><span>🔓 編集ロック</span>';
+                banner.classList.add('hidden');
+            }
+
+            // ヘッダー・追加フォーム等の操作可否切り替え
+            const disableIds = [
+                'btn-open-staff', 'btn-open-reset',
+                'input-child-name', 'input-child-time', 'input-child-memo',
+                'btn-add-child', 'btn-bulk-modal', 'btn-load-sample'
+            ];
+            disableIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.disabled = locked;
+            });
+
+            const addSection = document.getElementById('add-child-section');
+            if (addSection) {
+                if (locked) {
+                    addSection.classList.add('opacity-60');
+                } else {
+                    addSection.classList.remove('opacity-60');
+                }
+            }
+        }
+
+        // ==========================================
+        // 6. 画面描画（PCテーブル＆スマホカード両対応）
         // ==========================================
         function renderAll() {
+            updateEditLockUI();
+
             const dateInput = document.getElementById('target-date');
             dateInput.value = appState.date;
             updatePrintDateDisplay();
@@ -929,10 +1074,17 @@
             return optionsHtml;
         }
 
+        function isChildAllDone(child) {
+            const photosDone = child.photos.every(p => p.done);
+            const othersDone = OTHER_TASKS.every(t => child.tasks[t.key]?.done);
+            return photosDone && othersDone;
+        }
+
         // 【PC・タブレット用】横並びテーブル描画
         function renderDesktopMatrixTable() {
             const tbody = document.getElementById('matrix-tbody');
             const section = document.getElementById('desktop-table-section');
+            const locked = appState.isEditLocked;
 
             if (appState.children.length === 0) {
                 tbody.innerHTML = '';
@@ -947,9 +1099,84 @@
                 const accStaff = child.tasks.accounting?.staff || '';
                 const accCheckStaff = child.tasks.accountingCheck?.staff || '';
                 const isAccountingDuplicate = accStaff !== '' && accStaff === accCheckStaff;
-                const allTasksDone = TASKS.every(t => child.tasks[t.key]?.done);
+                const allTasksDone = isChildAllDone(child);
 
-                const taskCellsHtml = TASKS.map(task => {
+                // --- 託児フォト（1回目〜最大5回目）セル ---
+                const photoSlotsHtml = child.photos.map((slot, pIdx) => {
+                    const selectedStaff = slot.staff;
+                    const isDone = slot.done;
+                    const color = getStaffColor(selectedStaff);
+
+                    let selectBg = '#F8F7F4';
+                    let selectColor = '#5C4D42';
+                    let selectBorder = '#E0ECE5';
+                    if (selectedStaff && color) {
+                        selectBg = color.bg;
+                        selectColor = color.text;
+                        selectBorder = color.border;
+                    }
+                    if (isDone) {
+                        selectBg = '#F3F4F6';
+                        selectColor = '#9CA3AF';
+                        selectBorder = '#E5E7EB';
+                    }
+
+                    return `
+                        <div class="flex items-center gap-1">
+                            <span class="text-[11px] font-bold text-sage-700 w-9 shrink-0 text-right">${pIdx + 1}回目</span>
+                            <select 
+                                ${locked ? 'disabled' : ''}
+                                onchange="updatePhotoStaff('${child.id}', ${pIdx}, this.value)"
+                                style="background-color: ${selectBg}; color: ${selectColor}; border-color: ${selectBorder};"
+                                class="staff-select flex-1 min-w-[92px] h-9 rounded-lg border-2 px-2 text-xs font-bold transition focus:outline-none focus:ring-2 focus:ring-sage-500 ${isDone ? 'line-through opacity-75' : ''}">
+                                ${buildStaffOptionsHtml(selectedStaff)}
+                            </select>
+                            <button 
+                                type="button"
+                                ${locked ? 'disabled' : ''}
+                                onclick="togglePhotoDone('${child.id}', ${pIdx})"
+                                title="${isDone ? '完了を解除' : '完了にする'}"
+                                class="no-print shrink-0 w-7 h-7 rounded-full flex items-center justify-center border-2 transition active:scale-90 disabled:opacity-60 disabled:pointer-events-none ${
+                                    isDone 
+                                    ? 'bg-sage-500 border-sage-500 text-white shadow-2xs' 
+                                    : 'bg-white border-sage-200 text-sage-200 hover:border-sage-500 hover:text-sage-500'
+                                }">
+                                <i class="ph-bold ph-check text-xs"></i>
+                            </button>
+                            ${pIdx > 0 && !locked ? `
+                                <button 
+                                    type="button"
+                                    onclick="removePhotoSlot('${child.id}', ${pIdx})"
+                                    title="${pIdx + 1}回目を削除"
+                                    class="no-print shrink-0 w-6 h-6 rounded-md bg-ivory hover:bg-terracotta-100 text-wood-700 hover:text-terracotta-600 flex items-center justify-center transition">
+                                    <i class="ph-bold ph-x text-xs"></i>
+                                </button>
+                            ` : (child.photos.length > 1 ? '<span class="no-print w-6 shrink-0"></span>' : '')}
+                            ${isDone ? '<span class="hidden print-only cell-done-badge ml-1">済</span>' : ''}
+                        </div>
+                    `;
+                }).join('');
+
+                const addPhotoBtnHtml = (!locked && child.photos.length < MAX_PHOTO_SLOTS) ? `
+                    <div class="no-print flex justify-end mt-1">
+                        <button type="button" onclick="addPhotoSlot('${child.id}')" class="inline-flex items-center gap-0.5 text-[11px] font-bold text-sage-600 hover:text-sage-700 bg-sage-50 hover:bg-sage-100 border border-sage-200 px-2 py-0.5 rounded-lg transition active:scale-95">
+                            <i class="ph-bold ph-plus text-xs"></i>
+                            <span>追加 (${child.photos.length}/${MAX_PHOTO_SLOTS})</span>
+                        </button>
+                    </div>
+                ` : '';
+
+                const photoTdHtml = `
+                    <td class="p-2 align-middle bg-sage-50/20">
+                        <div class="flex flex-col gap-1.5">
+                            ${photoSlotsHtml}
+                            ${addPhotoBtnHtml}
+                        </div>
+                    </td>
+                `;
+
+                // --- その他5業務セル ---
+                const otherCellsHtml = OTHER_TASKS.map(task => {
                     const cellData = child.tasks[task.key] || { staff: '', done: false };
                     const selectedStaff = cellData.staff;
                     const isDone = cellData.done;
@@ -978,17 +1205,19 @@
                         <td class="p-2 align-middle transition-colors ${isDone ? 'bg-gray-50/90' : ''} ${showDupWarning && !isDone ? 'bg-terracotta-100/40' : ''}">
                             <div class="relative flex items-center gap-1.5">
                                 <select 
+                                    ${locked ? 'disabled' : ''}
                                     onchange="updateCellStaff('${child.id}', '${task.key}', this.value)"
                                     style="background-color: ${selectBg}; color: ${selectColor}; border-color: ${selectBorder};"
-                                    class="staff-select w-full h-11 rounded-xl border-2 px-2.5 text-sm lg:text-base font-bold cursor-pointer transition focus:outline-none focus:ring-2 focus:ring-sage-500 ${isDone ? 'line-through opacity-75' : ''}">
+                                    class="staff-select w-full h-11 rounded-xl border-2 px-2.5 text-sm font-bold transition focus:outline-none focus:ring-2 focus:ring-sage-500 ${isDone ? 'line-through opacity-75' : ''}">
                                     ${buildStaffOptionsHtml(selectedStaff)}
                                 </select>
 
                                 <button 
                                     type="button"
+                                    ${locked ? 'disabled' : ''}
                                     onclick="toggleCellDone('${child.id}', '${task.key}')"
                                     title="${isDone ? '完了を解除' : '完了にする'}"
-                                    class="no-print shrink-0 w-9 h-9 rounded-full flex items-center justify-center border-2 transition active:scale-90 ${
+                                    class="no-print shrink-0 w-9 h-9 rounded-full flex items-center justify-center border-2 transition active:scale-90 disabled:opacity-60 disabled:pointer-events-none ${
                                         isDone 
                                         ? 'bg-sage-500 border-sage-500 text-white shadow-2xs' 
                                         : 'bg-white border-sage-200 text-sage-200 hover:border-sage-500 hover:text-sage-500'
@@ -1013,9 +1242,9 @@
                     <tr class="group hover:bg-sage-50/40 transition-colors ${allTasksDone ? 'bg-gray-50/60' : ''}">
                         <td class="sticky-col py-3 px-4 align-middle border-r border-sage-100">
                             <div class="flex items-start justify-between gap-2">
-                                <div onclick="openEditChildModal('${child.id}')" class="cursor-pointer flex-1 min-w-0 group/name">
+                                <div onclick="${locked ? '' : `openEditChildModal('${child.id}')`}" class="${locked ? '' : 'cursor-pointer group/name'} flex-1 min-w-0">
                                     <div class="flex items-center gap-1.5">
-                                        <span class="font-maru font-bold text-base lg:text-lg text-wood-800 group-hover/name:text-sage-600 transition truncate ${allTasksDone ? 'line-through text-gray-400' : ''}">
+                                        <span class="font-maru font-bold text-base lg:text-lg text-wood-800 ${locked ? '' : 'group-hover/name:text-sage-600'} transition truncate ${allTasksDone ? 'line-through text-gray-400' : ''}">
                                             ${escapeHtml(child.name)}
                                         </span>
                                         ${allTasksDone ? '<span class="no-print text-[10px] font-bold bg-sage-500 text-white px-1.5 py-0.5 rounded-md shrink-0">✨全完了</span>' : ''}
@@ -1033,30 +1262,35 @@
                                     ` : ''}
                                 </div>
 
-                                <div class="no-print flex flex-col items-center gap-1 shrink-0">
-                                    <button onclick="openEditChildModal('${child.id}')" class="w-7 h-7 rounded-lg bg-ivory hover:bg-sage-100 text-wood-700 flex items-center justify-center transition" title="名前・メモを編集">
-                                        <i class="ph-bold ph-pencil-simple text-sm"></i>
-                                    </button>
-                                    <div class="flex items-center gap-0.5">
-                                        <button onclick="moveChild(${rowIndex}, -1)" ${rowIndex === 0 ? 'disabled' : ''} class="w-6 h-6 rounded bg-ivory hover:bg-sage-100 disabled:opacity-30 text-wood-700 flex items-center justify-center transition" title="上へ移動">
-                                            <i class="ph-bold ph-caret-up text-xs"></i>
+                                ${locked ? '' : `
+                                    <div class="no-print flex flex-col items-center gap-1 shrink-0">
+                                        <button onclick="openEditChildModal('${child.id}')" class="w-7 h-7 rounded-lg bg-ivory hover:bg-sage-100 text-wood-700 flex items-center justify-center transition" title="名前・メモを編集">
+                                            <i class="ph-bold ph-pencil-simple text-sm"></i>
                                         </button>
-                                        <button onclick="moveChild(${rowIndex}, 1)" ${rowIndex === appState.children.length - 1 ? 'disabled' : ''} class="w-6 h-6 rounded bg-ivory hover:bg-sage-100 disabled:opacity-30 text-wood-700 flex items-center justify-center transition" title="下へ移動">
-                                            <i class="ph-bold ph-caret-down text-xs"></i>
-                                        </button>
+                                        <div class="flex items-center gap-0.5">
+                                            <button onclick="moveChild(${rowIndex}, -1)" ${rowIndex === 0 ? 'disabled' : ''} class="w-6 h-6 rounded bg-ivory hover:bg-sage-100 disabled:opacity-30 text-wood-700 flex items-center justify-center transition" title="上へ移動">
+                                                <i class="ph-bold ph-caret-up text-xs"></i>
+                                            </button>
+                                            <button onclick="moveChild(${rowIndex}, 1)" ${rowIndex === appState.children.length - 1 ? 'disabled' : ''} class="w-6 h-6 rounded bg-ivory hover:bg-sage-100 disabled:opacity-30 text-wood-700 flex items-center justify-center transition" title="下へ移動">
+                                                <i class="ph-bold ph-caret-down text-xs"></i>
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
+                                `}
                             </div>
                         </td>
-                        ${taskCellsHtml}
+                        ${photoTdHtml}
+                        ${otherCellsHtml}
                     </tr>
                 `;
             }).join('');
         }
 
-        // 【スマホ専用】1人1カード＆2列×3行グリッド描画
+        // 【スマホ専用】1人1カード＆コンパクト託児フォト＋2列グリッド描画
         function renderMobileCards() {
             const container = document.getElementById('mobile-cards-container');
+            const locked = appState.isEditLocked;
+
             if (appState.children.length === 0) {
                 container.innerHTML = '';
                 return;
@@ -1066,9 +1300,83 @@
                 const accStaff = child.tasks.accounting?.staff || '';
                 const accCheckStaff = child.tasks.accountingCheck?.staff || '';
                 const isAccountingDuplicate = accStaff !== '' && accStaff === accCheckStaff;
-                const allTasksDone = TASKS.every(t => child.tasks[t.key]?.done);
+                const allTasksDone = isChildAllDone(child);
 
-                const gridItemsHtml = TASKS.map(task => {
+                // --- スマホ用 託児フォト（1回目〜最大5回目） ---
+                const mobilePhotoRowsHtml = child.photos.map((slot, pIdx) => {
+                    const selectedStaff = slot.staff;
+                    const isDone = slot.done;
+                    const color = getStaffColor(selectedStaff);
+
+                    let selectBg = '#FFFFFF';
+                    let selectColor = '#5C4D42';
+                    let selectBorder = '#E0ECE5';
+                    if (selectedStaff && color) {
+                        selectBg = color.bg;
+                        selectColor = color.text;
+                        selectBorder = color.border;
+                    }
+                    if (isDone) {
+                        selectBg = '#F3F4F6';
+                        selectColor = '#9CA3AF';
+                        selectBorder = '#E5E7EB';
+                    }
+
+                    return `
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-xs font-bold text-sage-700 w-10 shrink-0">${pIdx + 1}回目</span>
+                            <select 
+                                ${locked ? 'disabled' : ''}
+                                onchange="updatePhotoStaff('${child.id}', ${pIdx}, this.value)"
+                                style="background-color: ${selectBg}; color: ${selectColor}; border-color: ${selectBorder};"
+                                class="staff-select flex-1 h-10 rounded-xl border-2 px-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sage-500 ${isDone ? 'line-through opacity-75' : ''}">
+                                ${buildStaffOptionsHtml(selectedStaff)}
+                            </select>
+                            <button 
+                                type="button"
+                                ${locked ? 'disabled' : ''}
+                                onclick="togglePhotoDone('${child.id}', ${pIdx})"
+                                class="shrink-0 w-8 h-8 rounded-full flex items-center justify-center border-2 transition active:scale-90 disabled:opacity-60 disabled:pointer-events-none ${
+                                    isDone 
+                                    ? 'bg-sage-500 border-sage-500 text-white shadow-2xs' 
+                                    : 'bg-white border-sage-200 text-sage-300'
+                                }">
+                                <i class="ph-bold ph-check text-xs"></i>
+                            </button>
+                            ${pIdx > 0 && !locked ? `
+                                <button 
+                                    type="button"
+                                    onclick="removePhotoSlot('${child.id}', ${pIdx})"
+                                    class="shrink-0 w-7 h-7 rounded-lg bg-white border border-sage-200 text-wood-700 active:bg-terracotta-100 active:text-terracotta-600 flex items-center justify-center">
+                                    <i class="ph-bold ph-x text-xs"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('');
+
+                const mobilePhotoSectionHtml = `
+                    <div class="rounded-2xl p-3 border bg-sage-50/60 border-sage-200/90 mb-2.5">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-wood-800 flex items-center gap-1">
+                                <i class="ph-duotone ph-camera text-sage-600 text-base"></i>
+                                <span>託児フォト（${child.photos.length}/${MAX_PHOTO_SLOTS}回）</span>
+                            </span>
+                            ${(!locked && child.photos.length < MAX_PHOTO_SLOTS) ? `
+                                <button type="button" onclick="addPhotoSlot('${child.id}')" class="inline-flex items-center gap-1 text-xs font-bold text-sage-700 bg-white hover:bg-sage-100 border border-sage-200 px-2.5 py-1 rounded-xl shadow-2xs active:scale-95 transition">
+                                    <i class="ph-bold ph-plus text-xs"></i>
+                                    <span>追加</span>
+                                </button>
+                            ` : ''}
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            ${mobilePhotoRowsHtml}
+                        </div>
+                    </div>
+                `;
+
+                // --- スマホ用 その他5項目の2列グリッド ---
+                const gridItemsHtml = OTHER_TASKS.map(task => {
                     const cellData = child.tasks[task.key] || { staff: '', done: false };
                     const selectedStaff = cellData.staff;
                     const isDone = cellData.done;
@@ -1101,7 +1409,6 @@
                                 ? 'bg-terracotta-100/40 border-terracotta-500' 
                                 : 'bg-ivory/80 border-sage-200/70'
                         }">
-                            <!-- 項目ラベル＆完了丸ボタン -->
                             <div class="flex items-center justify-between gap-1 mb-1.5">
                                 <span class="text-xs font-bold flex items-center gap-1 ${isDone ? 'text-gray-400' : 'text-wood-700'}">
                                     <i class="ph-duotone ${task.icon} text-sage-600 text-sm"></i>
@@ -1109,8 +1416,9 @@
                                 </span>
                                 <button 
                                     type="button"
+                                    ${locked ? 'disabled' : ''}
                                     onclick="toggleCellDone('${child.id}', '${task.key}')"
-                                    class="w-7 h-7 rounded-full flex items-center justify-center border-2 transition active:scale-90 ${
+                                    class="w-7 h-7 rounded-full flex items-center justify-center border-2 transition active:scale-90 disabled:opacity-60 disabled:pointer-events-none ${
                                         isDone 
                                         ? 'bg-sage-500 border-sage-500 text-white shadow-2xs' 
                                         : 'bg-white border-sage-200 text-sage-300'
@@ -1119,11 +1427,11 @@
                                 </button>
                             </div>
 
-                            <!-- 担当者プルダウン -->
                             <select 
+                                ${locked ? 'disabled' : ''}
                                 onchange="updateCellStaff('${child.id}', '${task.key}', this.value)"
                                 style="background-color: ${selectBg}; color: ${selectColor}; border-color: ${selectBorder};"
-                                class="staff-select w-full h-10 rounded-xl border-2 px-2.5 text-sm font-bold cursor-pointer focus:outline-none focus:ring-2 focus:ring-sage-500 ${isDone ? 'line-through opacity-75' : ''}">
+                                class="staff-select w-full h-10 rounded-xl border-2 px-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sage-500 ${isDone ? 'line-through opacity-75' : ''}">
                                 ${buildStaffOptionsHtml(selectedStaff)}
                             </select>
 
@@ -1141,7 +1449,7 @@
                     <article class="bg-white rounded-3xl p-4 shadow-xs border border-sage-200/90 ${allTasksDone ? 'opacity-85 bg-gray-50/50' : ''}">
                         <!-- カードヘッダー：お子様名・時間・メモ・編集 -->
                         <div class="flex items-start justify-between gap-2 pb-3 mb-3 border-b border-sage-100">
-                            <div onclick="openEditChildModal('${child.id}')" class="flex-1 min-w-0 cursor-pointer">
+                            <div onclick="${locked ? '' : `openEditChildModal('${child.id}')`}" class="flex-1 min-w-0 ${locked ? '' : 'cursor-pointer'}">
                                 <div class="flex flex-wrap items-center gap-1.5">
                                     <h3 class="font-maru font-bold text-lg text-wood-800 ${allTasksDone ? 'line-through text-gray-400' : ''}">
                                         ${escapeHtml(child.name)}
@@ -1163,21 +1471,25 @@
                                 </div>
                             </div>
 
-                            <!-- 並び替え・編集ボタン -->
-                            <div class="flex items-center gap-1 shrink-0">
-                                <button onclick="moveChild(${rowIndex}, -1)" ${rowIndex === 0 ? 'disabled' : ''} class="w-8 h-8 rounded-xl bg-ivory disabled:opacity-30 text-wood-700 flex items-center justify-center border border-sage-200/70">
-                                    <i class="ph-bold ph-caret-up text-sm"></i>
-                                </button>
-                                <button onclick="moveChild(${rowIndex}, 1)" ${rowIndex === appState.children.length - 1 ? 'disabled' : ''} class="w-8 h-8 rounded-xl bg-ivory disabled:opacity-30 text-wood-700 flex items-center justify-center border border-sage-200/70">
-                                    <i class="ph-bold ph-caret-down text-sm"></i>
-                                </button>
-                                <button onclick="openEditChildModal('${child.id}')" class="w-8 h-8 rounded-xl bg-sage-50 text-sage-700 flex items-center justify-center border border-sage-200 ml-0.5">
-                                    <i class="ph-bold ph-pencil-simple text-sm"></i>
-                                </button>
-                            </div>
+                            ${locked ? '' : `
+                                <div class="flex items-center gap-1 shrink-0">
+                                    <button onclick="moveChild(${rowIndex}, -1)" ${rowIndex === 0 ? 'disabled' : ''} class="w-8 h-8 rounded-xl bg-ivory disabled:opacity-30 text-wood-700 flex items-center justify-center border border-sage-200/70">
+                                        <i class="ph-bold ph-caret-up text-sm"></i>
+                                    </button>
+                                    <button onclick="moveChild(${rowIndex}, 1)" ${rowIndex === appState.children.length - 1 ? 'disabled' : ''} class="w-8 h-8 rounded-xl bg-ivory disabled:opacity-30 text-wood-700 flex items-center justify-center border border-sage-200/70">
+                                        <i class="ph-bold ph-caret-down text-sm"></i>
+                                    </button>
+                                    <button onclick="openEditChildModal('${child.id}')" class="w-8 h-8 rounded-xl bg-sage-50 text-sage-700 flex items-center justify-center border border-sage-200 ml-0.5">
+                                        <i class="ph-bold ph-pencil-simple text-sm"></i>
+                                    </button>
+                                </div>
+                            `}
                         </div>
 
-                        <!-- 6項目の2列×3行グリッド -->
+                        <!-- 託児フォト（1〜5回） -->
+                        ${mobilePhotoSectionHtml}
+
+                        <!-- その他5項目の2列グリッド -->
                         <div class="grid grid-cols-2 gap-2.5">
                             ${gridItemsHtml}
                         </div>
@@ -1186,13 +1498,21 @@
             }).join('');
         }
 
+        // 担当者別担当数サマリー（託児フォト1〜5回＋その他5業務をすべて合算）
         function renderStaffSummary() {
             const container = document.getElementById('staff-summary-list');
             const counts = {};
             appState.staffList.forEach(s => counts[s] = 0);
 
             appState.children.forEach(child => {
-                TASKS.forEach(t => {
+                // 託児フォト（1〜5回）の割り当て件数を加算
+                child.photos.forEach(p => {
+                    if (p.staff) {
+                        counts[p.staff] = (counts[p.staff] || 0) + 1;
+                    }
+                });
+                // その他5業務の割り当て件数を加算
+                OTHER_TASKS.forEach(t => {
                     const s = child.tasks[t.key]?.staff;
                     if (s) {
                         counts[s] = (counts[s] || 0) + 1;
@@ -1220,9 +1540,11 @@
         }
 
         // ==========================================
-        // 6. 児童（顧客）＆担当割り振り操作ロジック
+        // 7. 児童（顧客）＆託児フォト＆担当割り振り操作
         // ==========================================
         function addChild() {
+            if (guardIfLocked()) return;
+
             const nameInput = document.getElementById('input-child-name');
             const timeInput = document.getElementById('input-child-time');
             const memoInput = document.getElementById('input-child-memo');
@@ -1249,7 +1571,7 @@
 
         function createChildObject(name, time = '', memo = '') {
             const tasks = {};
-            TASKS.forEach(t => {
+            OTHER_TASKS.forEach(t => {
                 tasks[t.key] = { staff: '', done: false };
             });
             return {
@@ -1257,17 +1579,20 @@
                 name,
                 time,
                 memo,
+                photos: [{ staff: '', done: false }],
                 tasks
             };
         }
 
         function loadSampleChildren() {
+            if (guardIfLocked()) return;
+
             const s = appState.staffList;
-            const s0 = s[0] || '佐藤';
-            const s1 = s[1] || '鈴木';
-            const s2 = s[2] || '高橋';
-            const s3 = s[3] || '田中';
-            const s4 = s[4] || '伊藤';
+            const s0 = s[0] || '亜紀先生';
+            const s1 = s[1] || '佐藤先生';
+            const s2 = s[2] || 'ユミ先生';
+            const s3 = s[3] || '佳奈先生';
+            const s4 = s[4] || '木村先生';
 
             appState.children = [
                 {
@@ -1275,8 +1600,11 @@
                     name: 'さとう ひまり',
                     time: '9:00〜16:00',
                     memo: 'お昼寝布団あり',
+                    photos: [
+                        { staff: s0, done: true },
+                        { staff: s1, done: false }
+                    ],
                     tasks: {
-                        photo: { staff: s0, done: true },
                         concierge: { staff: s1, done: true },
                         accounting: { staff: s2, done: false },
                         accountingCheck: { staff: s3, done: false },
@@ -1289,8 +1617,10 @@
                     name: 'たなか みなと',
                     time: '9:30〜15:00',
                     memo: '卵アレルギー注意',
+                    photos: [
+                        { staff: s1, done: true }
+                    ],
                     tasks: {
-                        photo: { staff: s1, done: true },
                         concierge: { staff: s2, done: false },
                         accounting: { staff: s3, done: false },
                         accountingCheck: { staff: s0, done: false },
@@ -1303,8 +1633,10 @@
                     name: 'やまもと ゆい',
                     time: '10:00〜14:00',
                     memo: '',
+                    photos: [
+                        { staff: '', done: false }
+                    ],
                     tasks: {
-                        photo: { staff: '', done: false },
                         concierge: { staff: '', done: false },
                         accounting: { staff: '', done: false },
                         accountingCheck: { staff: '', done: false },
@@ -1319,6 +1651,8 @@
         }
 
         function addBulkChildren() {
+            if (guardIfLocked()) return;
+
             const textarea = document.getElementById('bulk-textarea');
             const lines = textarea.value.split('\n').map(l => l.trim()).filter(l => l !== '');
 
@@ -1360,6 +1694,8 @@
         }
 
         function moveChild(index, direction) {
+            if (guardIfLocked()) return;
+
             const targetIndex = index + direction;
             if (targetIndex < 0 || targetIndex >= appState.children.length) return;
 
@@ -1372,6 +1708,8 @@
         }
 
         function openEditChildModal(childId) {
+            if (guardIfLocked()) return;
+
             const child = appState.children.find(c => c.id === childId);
             if (!child) return;
 
@@ -1384,6 +1722,8 @@
         }
 
         function saveChildEdit() {
+            if (guardIfLocked()) return;
+
             const id = document.getElementById('edit-child-id').value;
             const name = document.getElementById('edit-child-name').value.trim();
             const time = document.getElementById('edit-child-time').value.trim();
@@ -1407,6 +1747,8 @@
         }
 
         function deleteCurrentEditingChild() {
+            if (guardIfLocked()) return;
+
             const id = document.getElementById('edit-child-id').value;
             const index = appState.children.findIndex(c => c.id === id);
             if (index !== -1) {
@@ -1419,7 +1761,61 @@
             closeModal('edit-child-modal');
         }
 
+        // --- 【新機能】託児フォト 1〜5回スロット操作 ---
+        function addPhotoSlot(childId) {
+            if (guardIfLocked()) return;
+
+            const child = appState.children.find(c => c.id === childId);
+            if (!child) return;
+
+            if (child.photos.length >= MAX_PHOTO_SLOTS) {
+                showToast(`託児フォトは最大${MAX_PHOTO_SLOTS}回までです`, 'error');
+                return;
+            }
+
+            child.photos.push({ staff: '', done: false });
+            renderAll();
+            saveChildrenToFirebase();
+            showToast(`託児フォト ${child.photos.length}回目を追加しました`);
+        }
+
+        function removePhotoSlot(childId, photoIdx) {
+            if (guardIfLocked()) return;
+
+            const child = appState.children.find(c => c.id === childId);
+            if (!child || child.photos.length <= 1 || photoIdx <= 0) return;
+
+            child.photos.splice(photoIdx, 1);
+            renderAll();
+            saveChildrenToFirebase();
+        }
+
+        function updatePhotoStaff(childId, photoIdx, staffName) {
+            if (guardIfLocked()) return;
+
+            const child = appState.children.find(c => c.id === childId);
+            if (!child || !child.photos[photoIdx]) return;
+
+            child.photos[photoIdx].staff = staffName;
+            renderAll();
+            saveChildrenToFirebase();
+        }
+
+        function togglePhotoDone(childId, photoIdx) {
+            if (guardIfLocked()) return;
+
+            const child = appState.children.find(c => c.id === childId);
+            if (!child || !child.photos[photoIdx]) return;
+
+            child.photos[photoIdx].done = !child.photos[photoIdx].done;
+            renderAll();
+            saveChildrenToFirebase();
+        }
+
+        // --- その他5業務セルの操作 ---
         function updateCellStaff(childId, taskKey, staffName) {
+            if (guardIfLocked()) return;
+
             const child = appState.children.find(c => c.id === childId);
             if (!child) return;
 
@@ -1433,6 +1829,8 @@
         }
 
         function toggleCellDone(childId, taskKey) {
+            if (guardIfLocked()) return;
+
             const child = appState.children.find(c => c.id === childId);
             if (!child) return;
 
@@ -1446,9 +1844,11 @@
         }
 
         // ==========================================
-        // 7. スタッフ＆合言葉（パスコード）管理操作
+        // 8. スタッフ＆合言葉（パスコード）管理操作
         // ==========================================
         function openStaffModal() {
+            if (guardIfLocked()) return;
+
             renderStaffModalList();
             document.getElementById('input-new-passcode').value = appState.passcode;
             openModal('staff-modal');
@@ -1486,6 +1886,8 @@
         }
 
         function addStaff() {
+            if (guardIfLocked()) return;
+
             const input = document.getElementById('input-staff-name');
             const name = input.value.trim();
             if (!name) {
@@ -1502,19 +1904,23 @@
             renderStaffModalList();
             renderAll();
             saveStaffToFirebase();
-            showToast(`${name} 先生を追加しました`);
+            showToast(`${name} を追加しました`);
         }
 
         function removeStaff(index) {
+            if (guardIfLocked()) return;
+
             const removed = appState.staffList[index];
             appState.staffList.splice(index, 1);
             renderStaffModalList();
             renderAll();
             saveStaffToFirebase();
-            showToast(`${removed} 先生をリストから削除しました`);
+            showToast(`${removed} をリストから削除しました`);
         }
 
         function moveStaff(index, direction) {
+            if (guardIfLocked()) return;
+
             const targetIndex = index + direction;
             if (targetIndex < 0 || targetIndex >= appState.staffList.length) return;
 
@@ -1528,6 +1934,8 @@
         }
 
         async function updatePasscode() {
+            if (guardIfLocked()) return;
+
             const input = document.getElementById('input-new-passcode');
             const newPass = input.value.trim();
 
@@ -1538,9 +1946,9 @@
 
             setSyncStatus('saving');
             try {
-                await db.ref(`${DB_ROOT}/passcode`).set(newPass);
+                await db.ref(`${SETTINGS_PATH}/passcode`).set(newPass);
                 appState.passcode = newPass;
-                sessionStorage.setItem(SESSION_UNLOCK_KEY, newPass);
+                localStorage.setItem(UNLOCK_STORAGE_KEY, newPass);
                 setSyncStatus('connected');
                 showToast(`新しい合言葉「${newPass}」に変更しました！`);
             } catch (e) {
@@ -1551,13 +1959,16 @@
         }
 
         // ==========================================
-        // 8. リセット・共有コピー・印刷機能
+        // 9. リセット・共有コピー・印刷機能
         // ==========================================
         function openResetModal() {
+            if (guardIfLocked()) return;
             openModal('reset-modal');
         }
 
         function confirmResetDay() {
+            if (guardIfLocked()) return;
+
             appState.children = [];
             renderAll();
             saveChildrenToFirebase();
@@ -1572,7 +1983,7 @@
             }
 
             const [y, m, d] = appState.date.split('-');
-            let text = `【一時保育 担当表】${Number(m)}/${Number(d)}\n`;
+            let text = `【キッズルームなるなるの木 一時保育 担当表】${Number(m)}/${Number(d)}\n`;
             text += `━━━━━━━━━━━━━━\n`;
 
             appState.children.forEach((child, i) => {
@@ -1581,14 +1992,22 @@
                 text += `\n`;
                 if (child.memo) text += `  ※${child.memo}\n`;
 
-                const assigns = TASKS.map(t => {
-                    const cell = child.tasks[t.key];
-                    const staff = cell?.staff || '未定';
-                    const doneMark = cell?.done ? '✅' : '';
-                    return `  ・${t.label}: ${staff}${doneMark}`;
+                // 託児フォト（1〜5回分）
+                const photoLines = child.photos.map((p, idx) => {
+                    const staff = p.staff || '未定';
+                    const mark = p.done ? '✓' : '未';
+                    return `  ・託児フォト(${idx + 1}回目): ${staff} [${mark}]`;
                 }).join('\n');
 
-                text += assigns + '\n';
+                // その他5業務
+                const otherLines = OTHER_TASKS.map(t => {
+                    const cell = child.tasks[t.key];
+                    const staff = cell?.staff || '未定';
+                    const mark = cell?.done ? '✓' : '未';
+                    return `  ・${t.label}: ${staff} [${mark}]`;
+                }).join('\n');
+
+                text += photoLines + '\n' + otherLines + '\n';
                 if (i < appState.children.length - 1) text += `\n`;
             });
 
@@ -1613,7 +2032,7 @@
         }
 
         // ==========================================
-        // 9. ユーティリティ＆起動処理
+        // 10. ユーティリティ＆起動処理
         // ==========================================
         function generateId() {
             return 'id_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
@@ -1632,6 +2051,7 @@
         }
 
         function openBulkModal() {
+            if (guardIfLocked()) return;
             openModal('bulk-modal');
         }
 
